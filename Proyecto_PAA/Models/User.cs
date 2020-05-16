@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Proyecto_PAA.Models
 {
-    public class User
+    public class User : BaseEntity
     {
         [Key]
         public int UserId { get; set; }
@@ -26,6 +26,7 @@ namespace Proyecto_PAA.Models
         public byte[] PasswordSalt { get; set; } // asijdhasijhdiuas - iojuinvuyishbasui
 
         public DateTime? BirthDate { get; set; }
+
 
 
         public int? Age

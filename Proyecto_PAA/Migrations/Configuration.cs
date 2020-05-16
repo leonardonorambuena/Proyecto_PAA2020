@@ -1,5 +1,6 @@
 namespace Proyecto_PAA.Migrations
 {
+    using Proyecto_PAA.Helpers;
     using Proyecto_PAA.Models;
     using System;
     using System.Data.Entity;
@@ -23,13 +24,13 @@ namespace Proyecto_PAA.Migrations
             {
                 context.Roles.AddOrUpdate(new Role
                 {
-                    RoleName = "Administrador",
+                    RoleName = StringHelper.ROLE_ADMINISTRATOR,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 });
                 context.Roles.AddOrUpdate(new Role
                 {
-                    RoleName = "Cliente",
+                    RoleName = StringHelper.ROLE_CLIENT,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 });

@@ -76,14 +76,52 @@ namespace Proyecto_PAA.Controllers
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512())
             {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                passwordSalt = hmac.Key; 
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password)); 
             }
+        }
+
+        private bool CheckPassword(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
+            {
+                var passwordComputed = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password)); 
+                for (int i = 0; i < passwordComputed.Length ; i++)
+                    if (passwordComputed[i] != passwordHash[i])
+                        return false;
+            }
+
+            return true;
         }
 
         public ActionResult Login()
         {
+            Session["UserId"] = null;
             return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SignIn(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                User user = db.Users.FirstOrDefault(x => x.Email == model.Email);
+
+                if (user != null && CheckPassword(model.Password, user.PasswordHash, user.PasswordSalt))
+                {
+                    Session["UserId"] = user.UserId;
+                    Session["UserName"] = user.FullName;
+                    TempData["SuccessMessage"] = $"Bienvenido {user.FullName}";
+                    return RedirectToAction("Index", "Home"); //json
+                }
+
+                TempData["ErrorMessage"] = "Inicio de sesión incorrecto";
+                return RedirectToAction("Login");
+
+            }
+
+            TempData["ErrorMessage"] = "Existieron errores de validación";
+            return RedirectToAction("Login");
         }
     }
 }

@@ -1,7 +1,19 @@
 ﻿
 @{
-    ViewBag.Title = "Login";
+    ViewBag.Title = "Inicio de Sesión";
 }
 
-<h2>Login</h2>
-
+<form action="/auth/SignIn" method="post">
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="Email" class="form-control" value="" />
+    </div>
+    <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" name="Password" class="form-control" value="" />
+    </div>
+    <button type="submit" class="btn btn-success btn-block">
+        <i class="fa fa-sign-in"></i> Inicar Sesión
+    </button>
+</form>

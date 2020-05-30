@@ -24,6 +24,10 @@
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
 
+        public virtual DbSet<Category> Categories { get; set; }
+
+        public virtual DbSet<Product> Products { get; set; }
+
     }
 
     //public class MyEntity

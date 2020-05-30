@@ -132,13 +132,20 @@
     <Compile Include="Migrations\202005160104245_AddDatesToUserTable.Designer.cs">
       <DependentUpon>202005160104245_AddDatesToUserTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005300037599_AddProductTable.cs" />
+    <Compile Include="Migrations\202005300037599_AddProductTable.Designer.cs">
+      <DependentUpon>202005300037599_AddProductTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\BaseEntity.cs" />
+    <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\Product.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserRole.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Tickets\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202005090124395_CreateUserTable.resx">
@@ -169,6 +177,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005160104245_AddDatesToUserTable.resx">
       <DependentUpon>202005160104245_AddDatesToUserTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005300037599_AddProductTable.resx">
+      <DependentUpon>202005300037599_AddProductTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

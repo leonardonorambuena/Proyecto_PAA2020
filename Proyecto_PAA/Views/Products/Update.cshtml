@@ -1,0 +1,57 @@
+﻿@model Proyecto_PAA.ViewModels.ProductsViewModel
+@{
+    ViewBag.Title = "Modificar producto "+Model.ProductName;
+}
+
+
+<div class="card">
+    <div class="card-header">
+        <h3>@ViewBag.Title</h3>
+    </div>
+    <div class="card-body">
+        <form action="/products/update" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="ProductId" value="@Model.ProductId"/>
+            <div class="form-group">
+                <label>Nombre del producto</label>
+                <input type="text" name="ProductName" class="form-control" value="@Model.ProductName" placeholder="Nombre del producto"/>
+            </div>
+            <div class="form-group">
+                <label>Precio</label>
+                <input type="number" name="ProductPrice" class="form-control" value="@Model.ProductPrice" placeholder="Precio"/>
+            </div>
+            <div class="form-group">
+                <label>Stock</label>
+                <input type="number" name="ProductStock" class="form-control" value="@Model.ProductStock" placeholder="Stock" />
+            </div>
+            <div class="form-group">
+                <label>Categoría</label>
+                <select name="CategoryId" class="form-control">
+                    <option value="">Seleccione una categoría</option>
+                    @foreach (var item in Model.Categories)
+                    {
+                        if (item.CategoryId == Model.CategoryId)
+                        {
+                            <option value="@item.CategoryId" selected="selected">@item.CategoryName</option>
+                        }
+                        else
+                        {
+                            <option value="@item.CategoryId">@item.CategoryName</option>
+                        }
+
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success btn-block">
+                    <i class="fa fa-save"></i> Guardar
+                </button>
+                <button type="reset" class="btn btn-secondary btn-block">
+                    <i class="fa fa-refresh"></i> Resetear
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+

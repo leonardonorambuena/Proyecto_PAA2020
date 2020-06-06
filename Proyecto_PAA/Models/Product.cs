@@ -18,6 +18,8 @@ namespace Proyecto_PAA.Models
 
         public int ProductStock { get; set; }
 
+        public int ProductPrice { get; set; }
+
         [ForeignKey("CategoryId")]
         public Category Category { get; set; }
 

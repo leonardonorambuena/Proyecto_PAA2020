@@ -25,7 +25,8 @@ namespace Proyecto_PAA.Controllers
         [HttpGet]
         public ActionResult Register()
         {
-            return View();
+            RegisterViewModel vm = new RegisterViewModel();
+            return View(vm);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -69,7 +70,7 @@ namespace Proyecto_PAA.Controllers
             
             
 
-            return View();
+            return View(model);
         }
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)

@@ -136,6 +136,10 @@
     <Compile Include="Migrations\202005300037599_AddProductTable.Designer.cs">
       <DependentUpon>202005300037599_AddProductTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006060000138_AddPriceToProductTable.cs" />
+    <Compile Include="Migrations\202006060000138_AddPriceToProductTable.Designer.cs">
+      <DependentUpon>202006060000138_AddPriceToProductTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\BaseEntity.cs" />
@@ -146,6 +150,7 @@
     <Compile Include="Models\UserRole.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
+    <Compile Include="ViewModels\ProductsViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +165,7 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Shared\_Message.cshtml" />
     <Content Include="Views\Products\Index.cshtml" />
+    <Content Include="Views\Products\Update.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -180,6 +186,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005300037599_AddProductTable.resx">
       <DependentUpon>202005300037599_AddProductTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006060000138_AddPriceToProductTable.resx">
+      <DependentUpon>202006060000138_AddPriceToProductTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

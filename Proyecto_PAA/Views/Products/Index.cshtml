@@ -1,6 +1,91 @@
-﻿<div class="card">
-    <div class="card-header">
+﻿@using System.Web.UI.WebControls
+@model Proyecto_PAA.ViewModels.ProductsViewModel
+<div class="card mt-5">
+    <div class="card-header bg-primary text-white">
         <h3>Maestro de productos</h3>
+    </div>
+    
+    <div class="card-body">
+        @Html.ValidationSummary("", new {@class = "text-danger"})
+        <form action="/products/create" method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <label>Nombre del producto</label>
+                <input type="text" name="ProductName" class="form-control" value="@Model.ProductName" placeholder="Nombre del producto"/>
+                @Html.ValidationMessageFor(x => x.ProductName, "", new {@class = "text-danger"})
+            </div>
+            <div class="form-group">
+                <label>Precio</label>
+                <input type="text" name="ProductPrice" class="form-control" value="@Model.ProductPrice" placeholder="Precio"/>
+                @Html.ValidationMessageFor(x => x.ProductPrice, "", new {@class = "text-danger"})
+            </div>
+            <div class="form-group">
+                <label>Stock</label>
+                <input type="text" name="ProductStock" class="form-control" value="@Model.ProductStock" placeholder="Stock"/>
+                @Html.ValidationMessageFor(x => x.ProductStock, "", new {@class = "text-danger"})
+            </div>
+            <div class="form-group">
+                <label>Categoría</label>
+                <select name="CategoryId" class="form-control">
+                    <option value="">Seleccione una categoría</option>
+                    @foreach (var item in Model.Categories)
+                    {
+                        <option value="@item.CategoryId">@item.CategoryName</option>
+                    }
+                </select>
+                @Html.ValidationMessageFor(x => x.CategoryId, "", new {@class = "text-danger"})
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success btn-block">
+                    <i class="fa fa-save"></i> Guardar
+                </button>
+                <button type="reset" class="btn btn-secondary btn-block">
+                    <i class="fa fa-refresh"></i> Resetear
+                </button>
+            </div>
+        </form>
+
+        <h3 class="card-title">Productos Registrados</h3>
+        <form class="form-inline" action="/products">
+            <input type="text" name="q" class="form-control"/>
+            <button type="submit" class="btn btn-primary ml-2">
+                <i class="fa fa-search"></i>
+            </button>
+        </form>
+        <div class="table-responsive mt-2">
+            <table class="table table-bordered table-hover table-striped">
+                <thead class="thead-darker">
+                <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Categoría</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                @foreach (var item in Model.Products)
+                {
+                    <tr>
+                        <td>@item.ProductId</td>
+                        <td>@item.ProductName</td>
+                        <td>@item.ProductPrice</td>
+                        <td>@item.ProductStock</td>
+                        <td>@(item.Category?.CategoryName)</td>
+                        <td>
+                            <a href="/products/Delete?id=@item.ProductId" class="btn btn-danger btn-sm" title="Eliminar">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                            <a href="/products/Update?id=@item.ProductId" class="btn btn-info btn-sm" title="Modificar">
+                                <i class="fa fa-pencil"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
     </div>
     
 </div>

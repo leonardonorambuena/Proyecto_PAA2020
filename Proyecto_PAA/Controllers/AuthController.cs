@@ -3,9 +3,13 @@ using Proyecto_PAA.Models;
 using Proyecto_PAA.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Metadata.Edm;
 using System.Linq;
+using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using Microsoft.Owin.Security;
 
 namespace Proyecto_PAA.Controllers
 {
@@ -90,8 +94,7 @@ namespace Proyecto_PAA.Controllers
 
                 if (user != null && PasswordHelper.CheckPassword(model.Password, user.PasswordHash, user.PasswordSalt))
                 {
-                    Session["UserId"] = user.UserId;
-                    Session["UserName"] = user.FullName;
+                    InitOwin(user);
                     TempData["SuccessMessage"] = $"Bienvenido {user.FullName}";
                     return RedirectToAction("Index", "Home"); //json
                 }
@@ -103,6 +106,30 @@ namespace Proyecto_PAA.Controllers
 
             TempData["ErrorMessage"] = "Existieron errores de validación";
             return RedirectToAction("Login");
+        }
+
+        private void InitOwin(User user)
+        {
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim("FullName", user.FullName), 
+            };
+
+            var identity = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
+
+            var roles = db.UserRoles.Where(x => x.UserId == user.UserId).Select(x => x.Role);
+            foreach (var role in roles)
+            {
+                identity.AddClaim(new Claim(ClaimTypes.Role, role.RoleName));
+            }
+
+            var context = Request.GetOwinContext();
+            var authManager = context.Authentication;
+
+            authManager.SignIn(identity);
         }
     }
 }

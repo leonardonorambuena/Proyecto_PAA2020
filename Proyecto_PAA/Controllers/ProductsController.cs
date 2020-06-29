@@ -10,6 +10,7 @@ using Proyecto_PAA.ViewModels;
 
 namespace Proyecto_PAA.Controllers
 {
+    [Authorize]
     public class ProductsController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();
@@ -34,11 +35,8 @@ namespace Proyecto_PAA.Controllers
         }
 
         // GET: Products
-            public ActionResult Index(string q, int? searchCategoryId)
+        public ActionResult Index(string q, int? searchCategoryId)
         {
-            if(init() == false)
-                return RedirectToAction("Login", "Auth");
-
             ProductsViewModel vm = new ProductsViewModel();
 
             var query = GetQuery(q, searchCategoryId);
@@ -156,11 +154,11 @@ namespace Proyecto_PAA.Controllers
             return View(vm);
         }
 
-
+        /*
         public bool init()
         {
             return Session["UserId"] != null; // true, false
-        }
+        }*/
 
         protected override void Dispose(bool disposing)
         {

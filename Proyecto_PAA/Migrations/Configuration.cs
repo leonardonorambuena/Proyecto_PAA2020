@@ -36,7 +36,12 @@ namespace Proyecto_PAA.Migrations
                 });
 
             }
-            
+
+           UserSeeder.Seeder(context);
+
+           CategorySeeder.Seeder(context);
+
+
         }
     }
 }

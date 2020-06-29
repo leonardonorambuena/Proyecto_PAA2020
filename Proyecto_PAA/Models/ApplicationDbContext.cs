@@ -28,6 +28,8 @@
 
         public virtual DbSet<Product> Products { get; set; }
 
+        public virtual DbSet<Budget> Budgets { get; set; }
+
     }
 
     //public class MyEntity

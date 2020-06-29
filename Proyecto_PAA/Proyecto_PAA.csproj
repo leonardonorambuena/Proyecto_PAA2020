@@ -123,6 +123,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Migrations\202005090124395_CreateUserTable.cs" />
     <Compile Include="Migrations\202005090124395_CreateUserTable.Designer.cs">
@@ -140,9 +141,16 @@
     <Compile Include="Migrations\202006060000138_AddPriceToProductTable.Designer.cs">
       <DependentUpon>202006060000138_AddPriceToProductTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006270149399_AddBudgetsTable.cs" />
+    <Compile Include="Migrations\202006270149399_AddBudgetsTable.Designer.cs">
+      <DependentUpon>202006270149399_AddBudgetsTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\CategorySeeder.cs" />
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Migrations\UserSeeder.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\BaseEntity.cs" />
+    <Compile Include="Models\Budget.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\Role.cs" />
@@ -189,6 +197,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006060000138_AddPriceToProductTable.resx">
       <DependentUpon>202006060000138_AddPriceToProductTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006270149399_AddBudgetsTable.resx">
+      <DependentUpon>202006270149399_AddBudgetsTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

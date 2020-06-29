@@ -46,7 +46,7 @@ namespace Proyecto_PAA.Controllers
                 user.CreatedAt = DateTime.Now;
                 user.UpdatedAt = DateTime.Now;
                 byte[] psHash, psSalt;
-                CreatePasswordHash(model.Password, out psHash, out psSalt);
+                PasswordHelper.CreatePasswordHash(model.Password, out psHash, out psSalt);
                 user.PasswordHash = psHash;
                 user.PasswordSalt = psSalt;
                 var role = db.Roles.FirstOrDefault(x => x.RoleName == StringHelper.ROLE_CLIENT);
@@ -73,27 +73,7 @@ namespace Proyecto_PAA.Controllers
             return View(model);
         }
 
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512())
-            {
-                passwordSalt = hmac.Key; 
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password)); 
-            }
-        }
-
-        private bool CheckPassword(string password, byte[] passwordHash, byte[] passwordSalt)
-        {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
-            {
-                var passwordComputed = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password)); 
-                for (int i = 0; i < passwordComputed.Length ; i++)
-                    if (passwordComputed[i] != passwordHash[i])
-                        return false;
-            }
-
-            return true;
-        }
+        
 
         public ActionResult Login()
         {
@@ -108,7 +88,7 @@ namespace Proyecto_PAA.Controllers
             {
                 User user = db.Users.FirstOrDefault(x => x.Email == model.Email);
 
-                if (user != null && CheckPassword(model.Password, user.PasswordHash, user.PasswordSalt))
+                if (user != null && PasswordHelper.CheckPassword(model.Password, user.PasswordHash, user.PasswordSalt))
                 {
                     Session["UserId"] = user.UserId;
                     Session["UserName"] = user.FullName;

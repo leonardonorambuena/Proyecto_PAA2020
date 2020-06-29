@@ -48,6 +48,13 @@
         <h3 class="card-title">Productos Registrados</h3>
         <form class="form-inline" action="/products">
             <input type="text" name="q" class="form-control"/>
+            <select class="form-control" id="category-search" name="searchCategoryId">
+                <option></option>
+                @foreach (var item in Model.Categories)
+                {
+                    <option value="@item.CategoryId">@item.CategoryName</option>
+                }
+            </select>
             <button type="submit" class="btn btn-primary ml-2">
                 <i class="fa fa-search"></i>
             </button>
@@ -64,28 +71,104 @@
                     <th></th>
                 </tr>
                 </thead>
-
-                @foreach (var item in Model.Products)
-                {
-                    <tr>
-                        <td>@item.ProductId</td>
-                        <td>@item.ProductName</td>
-                        <td>@item.ProductPrice</td>
-                        <td>@item.ProductStock</td>
-                        <td>@(item.Category?.CategoryName)</td>
-                        <td>
-                            <a href="/products/Delete?id=@item.ProductId" class="btn btn-danger btn-sm" title="Eliminar">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                            <a href="/products/Update?id=@item.ProductId" class="btn btn-info btn-sm" title="Modificar">
-                                <i class="fa fa-pencil"></i>
-                            </a>
-                        </td>
-                    </tr>
-                }
+                <tbody id="tabla-productos">
+                    @foreach (var item in Model.Products)
+                    {
+                        <tr>
+                            <td>@item.ProductId</td>
+                            <td>@item.ProductName</td>
+                            <td>@item.ProductPrice</td>
+                            <td>@item.ProductStock</td>
+                            <td>@(item.Category?.CategoryName)</td>
+                            <td>
+                                <button type="button" data-id="@item.ProductId" data-nombre="@item.ProductName" id="btn-eliminar-producto" class="btn btn-danger btn-sm" title="Eliminar">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                                <a href="/products/Update?id=@item.ProductId" class="btn btn-info btn-sm" title="Modificar">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                
 
             </table>
         </div>
     </div>
     
 </div>
+
+<div class="modal" tabindex="-1" id="modal-delete-product" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="title-modal"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <a id="confirm-delete"  type="button" class="btn btn-danger"><i class="fa fa-trash"></i> Elimnar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        $(document).on('click',
+            '#btn-eliminar-producto',
+            function() {
+                var id = $(this).data('id');
+                var nombre = $(this).data('nombre');
+                $('#title-modal').text('¿Confirma eliminar el producto ' + nombre + '?');
+                $('#confirm-delete').attr('href', '/products/Delete?id=' + id);
+                $('#modal-delete-product').modal('show');
+            });
+
+
+        $(document).on('change',
+            '#category-search',
+            function() {
+                var categoryId = $(this).val();
+
+                fetch('/products/GetProductsJson?searchCategoryId=' + categoryId).then(function (res) {
+
+                    return res.json();
+
+                }).then(function (data) {
+                var html = '';
+                for (let item of data) {
+                    html += `
+                    <tr>
+                        <td>${item.ProductId}</td>
+                        <td>${item.ProductName}</td>
+                        <td>${item.ProductPrice}</td>
+                        <td>${item.ProductStock}</td>
+                        <td>${item.Category.CategoryName}</td>
+                        <td>
+                            <button type="button" data-id='${item.ProductId}' data-nombre='${item.ProductName
+                        }' id="btn-eliminar-producto" class="btn btn-danger btn-sm" title="Eliminar">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                            <a href='/products/Update?id='${item.ProductId}' class="btn btn-info btn-sm" title="Modificar">
+                                <i class="fa fa-pencil"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    `;
+                }
+
+                $('#tabla-productos').html(html);
+
+
+            });
+        
+
+    });
+
+    </script>
+}

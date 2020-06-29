@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
 using Proyecto_PAA.Models;
 using Proyecto_PAA.ViewModels;
 
@@ -10,31 +12,43 @@ namespace Proyecto_PAA.Controllers
 {
     public class ProductsController : Controller
     {
-        public ProductsController()
+        ApplicationDbContext db = new ApplicationDbContext();
+
+        private IQueryable<Product> GetQuery(string q, int? searchCategoryId)
         {
-            
+            var query = db.Products.AsQueryable();
+
+            if (!string.IsNullOrEmpty(q))
+                query = query.Where(x => x.ProductName.Contains(q));
+            if (searchCategoryId != null)
+                query = query.Where(x => x.CategoryId == searchCategoryId);
+
+            return query;
+        }
+
+        public ActionResult GetProductsJson(string q, int? searchCategoryId)
+        {
+            IQueryable<Product> query = GetQuery(q, searchCategoryId);
+            var products = query.Include(x => x.Category).ToList();
+            return Json(products, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Products
-        public ActionResult Index(string q)
+            public ActionResult Index(string q, int? searchCategoryId)
         {
             if(init() == false)
                 return RedirectToAction("Login", "Auth");
 
             ProductsViewModel vm = new ProductsViewModel();
-            vm.Products = (List<Product>)Session["ProductList"];
 
-            if (!string.IsNullOrEmpty(q))
-                vm.Products = vm.Products
-                                .Where(x => x.ProductName.ToUpper().Contains(q.ToUpper()))
-                                .ToList();
+            var query = GetQuery(q, searchCategoryId);
+            vm.Products = query.OrderBy(x => x.ProductName).ToList(); // select * from products order by productName
 
-            vm.Categories = (List<Category>) Session["CategoryList"];
+            vm.Categories = db.Categories.OrderBy(x => x.CategoryName).ToList();
 
             foreach (var product in vm.Products)
-            {
                 product.Category = vm.Categories.FirstOrDefault(x => x.CategoryId == product.CategoryId);
-            }
+
 
             return View(vm);
         }
@@ -43,28 +57,23 @@ namespace Proyecto_PAA.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(ProductsViewModel vm)
         {
-            var products = (List<Product>) Session["ProductList"];
-            var lastId = products.Select(x => x.ProductId).Max();
-
-
             if (ModelState.IsValid)
             {
                 Product product = new Product
                 {
-                    ProductId =  lastId + 1,
                     ProductName = vm.ProductName,
                     ProductPrice = (int)vm.ProductPrice,
                     ProductStock = (int)vm.ProductStock,
                     CategoryId = vm.CategoryId
                 };
-                products.Add(product);
-                Session["ProductList"] = products;
+                db.Products.Add(product);
+                db.SaveChanges();
 
                 return RedirectToAction("Index");
             }
 
-            vm.Products = products;
-            vm.Categories = (List<Category>)Session["CategoryList"];
+            vm.Products = db.Products.OrderBy(x => x.ProductName).ToList();
+            vm.Categories = db.Categories.OrderBy(x => x.CategoryName).ToList();
 
             foreach (var product in vm.Products)
             {
@@ -76,18 +85,19 @@ namespace Proyecto_PAA.Controllers
 
         public ActionResult Delete(int id)
         {
-            var products = (List<Product>)Session["ProductList"];
 
-            var product = products.FirstOrDefault(x => x.ProductId == id);
+            var product = db.Products.Find(id);
 
-            if (id == 0 || product == null)
+            if (product == null)
             {
                 TempData["ErrorMessage"] = "El identificador no fue encontrado";
                 return RedirectToAction("Index");
             }
 
-            products.Remove(product);
-            Session["ProductList"] = products;
+            db.Products.Remove(product);
+            db.SaveChanges();
+
+            TempData["SuccessMessage"] = $"El {product.ProductName} fue eliminado con éxito";
 
             return RedirectToAction("Index");
 
@@ -95,24 +105,21 @@ namespace Proyecto_PAA.Controllers
 
         public ActionResult Update(int id)
         {
-            var products = (List<Product>)Session["ProductList"];
+            var product = db.Products.Find(id);
 
-            var product = products.FirstOrDefault(x => x.ProductId == id);
-
-            if (id == 0 || product == null)
+            if (product == null)
             {
                 TempData["ErrorMessage"] = "El identificador no fue encontrado";
                 return RedirectToAction("Index");
             }
-
             ProductsViewModel vm = new ProductsViewModel();
-
-            vm.Categories = (List<Category>)Session["CategoryList"];
-            vm.ProductId = product.ProductId;
             vm.ProductName = product.ProductName;
+            vm.CategoryId = product.CategoryId;
             vm.ProductPrice = product.ProductPrice;
             vm.ProductStock = product.ProductStock;
-            vm.CategoryId = product.CategoryId;
+            vm.ProductId = product.ProductId;
+
+            vm.Categories = db.Categories.OrderBy(x => x.CategoryName).ToList();
 
 
             return View(vm);
@@ -122,81 +129,45 @@ namespace Proyecto_PAA.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Update(ProductsViewModel vm)
         {
-            var products = (List<Product>)Session["ProductList"];
-
-            var product = products.FirstOrDefault(x => x.ProductId == vm.ProductId);
-
-            if (product == null)
+            if (ModelState.IsValid)
             {
-                TempData["ErrorMessage"] = "El identificador no fue encontrado";
+                var product = db.Products.Find(vm.ProductId);
+
+                if (product == null)
+                {
+                    TempData["ErrorMessage"] = "El identificador no fue encontrado";
+                    return RedirectToAction("Index");
+                }
+
+                product.ProductName = vm.ProductName;
+                product.CategoryId = vm.CategoryId;
+                product.ProductPrice = (int)vm.ProductPrice;
+                product.ProductStock = (int)vm.ProductStock;
+
+                db.Entry(product).State = EntityState.Modified;
+                db.SaveChanges();
+
+                TempData["SuccessMessage"] = $"Producto {product.ProductName} actualizado correctamente";
                 return RedirectToAction("Index");
             }
 
-            product.ProductName = vm.ProductName;
-            product.CategoryId = vm.CategoryId;
-            product.ProductPrice = (int)vm.ProductPrice;
-            product.ProductStock = (int)vm.ProductStock;
+            vm.Categories = db.Categories.OrderBy(x => x.CategoryName).ToList();
 
-            Session["ProductList"] = products;
-
-            return RedirectToAction("Index");
+            return View(vm);
         }
 
 
         public bool init()
         {
-            if (Session["UserId"] == null)
-                return false;
+            return Session["UserId"] != null; // true, false
+        }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                db.Dispose();
 
-            if (Session["ProductList"] == null)
-            {
-                List<Product> products = new List<Product>();
-                List<Category> categories = new List<Category>();
-
-                categories.Add(new Category
-                {
-                    CategoryId = 1,
-                    CategoryName = "Video juegos"
-                });
-                categories.Add(new Category
-                {
-                    CategoryId = 2,
-                    CategoryName = "Tecnología"
-                });
-
-                Session["CategoryList"] = categories;
-
-                products.Add(new Product
-                {
-                    ProductId = 1,
-                    ProductName = "Monitor Gamer",
-                    CategoryId = 2,
-                    ProductPrice = 150000,
-                    ProductStock = 10,
-                });
-                products.Add(new Product
-                {
-                    ProductId = 2,
-                    ProductName = "Call Of duty MW",
-                    CategoryId = 1,
-                    ProductPrice = 35000,
-                    ProductStock = 15
-                });
-
-                products.Add(new Product
-                {
-                    ProductId = 3,
-                    ProductName = "Mario",
-                    CategoryId = 1,
-                    ProductPrice = 45000,
-                    ProductStock = 8
-                });
-
-                Session["ProductList"] = products;
-            }
-
-            return true;
+            base.Dispose(disposing);
         }
     }
 }

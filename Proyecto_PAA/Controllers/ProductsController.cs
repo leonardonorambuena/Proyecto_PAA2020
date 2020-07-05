@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
@@ -13,7 +14,7 @@ using Proyecto_PAA.ViewModels;
 
 namespace Proyecto_PAA.Controllers
 {
-    [Authorize(Roles = StringHelper.ROLE_CLIENT)]
+    [Authorize(Roles = StringHelper.ROLE_ADMINISTRATOR)]
     public class ProductsController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();
@@ -72,6 +73,14 @@ namespace Proyecto_PAA.Controllers
                 db.Products.Add(product);
                 db.SaveChanges();
 
+                if (vm.Image != null)
+                {
+                    product.ImageUrl =  UploadFile(vm.Image, product.ProductId.ToString());
+                    db.Entry(product).Property<string>(x => x.ImageUrl).IsModified = true;
+                    db.SaveChanges();
+                }
+
+
                 return RedirectToAction("Index");
             }
 
@@ -84,6 +93,20 @@ namespace Proyecto_PAA.Controllers
             }
 
             return View("Index", vm);
+        }
+
+        private string UploadFile(HttpPostedFileBase file, string nameDirectory)
+        {
+            string relativePath = @"/content/uploads/products/" + nameDirectory;
+            string directory = Server.MapPath(relativePath);
+            string name = $"{Guid.NewGuid()}.{file.FileName.Split('.').Last()}";
+            string path = Path.Combine(directory, name);
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(directory);
+            file.SaveAs(path);
+
+            return $"{relativePath}/{name}";
         }
 
         public ActionResult Delete(int id)
@@ -146,6 +169,9 @@ namespace Proyecto_PAA.Controllers
                 product.CategoryId = vm.CategoryId;
                 product.ProductPrice = (int)vm.ProductPrice;
                 product.ProductStock = (int)vm.ProductStock;
+
+                if (vm.Image != null)
+                    product.ImageUrl = UploadFile(vm.Image, product.ProductId.ToString());
 
                 db.Entry(product).State = EntityState.Modified;
                 db.SaveChanges();

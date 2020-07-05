@@ -23,6 +23,11 @@ namespace Proyecto_PAA.Models
         [ForeignKey("CategoryId")]
         public Category Category { get; set; }
 
-        
+
+        public string ImageUrl { get; set; }
+
+        public string ImagePath => string.IsNullOrEmpty(ImageUrl) ? "/Content/files/images/no-image.jpg" : ImageUrl;
+
+
     }
 }

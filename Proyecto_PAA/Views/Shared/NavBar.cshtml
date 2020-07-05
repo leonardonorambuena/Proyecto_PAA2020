@@ -1,4 +1,5 @@
-﻿<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white">
+﻿@using Proyecto_PAA.Helpers
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white">
     <a class="navbar-brand" href="#">Navbar</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -10,16 +11,35 @@
                 <a class="nav-link" href="/auth/register">Registro</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/auth/login">Inicio de sesión</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="/products">Productos</a>
             </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        @User.Identity.GetFullName()
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <form action="/Auth/SignOut" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="dropdown-item">Cerrar Sesión</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+
+            
+        }
+        else
+        {
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/auth/login">Iniciar sesión</a>
+                </li>
+            </ul>
+        }
     </div>
 </nav>
 

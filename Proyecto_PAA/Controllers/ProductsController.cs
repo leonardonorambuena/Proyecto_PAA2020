@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
+using Proyecto_PAA.Helpers;
 using Proyecto_PAA.Models;
 using Proyecto_PAA.ViewModels;
 
+
 namespace Proyecto_PAA.Controllers
 {
+    [Authorize(Roles = StringHelper.ROLE_CLIENT)]
     public class ProductsController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();
@@ -34,10 +38,9 @@ namespace Proyecto_PAA.Controllers
         }
 
         // GET: Products
-            public ActionResult Index(string q, int? searchCategoryId)
+        public ActionResult Index(string q, int? searchCategoryId)
         {
-            if(init() == false)
-                return RedirectToAction("Login", "Auth");
+
 
             ProductsViewModel vm = new ProductsViewModel();
 
@@ -156,11 +159,6 @@ namespace Proyecto_PAA.Controllers
             return View(vm);
         }
 
-
-        public bool init()
-        {
-            return Session["UserId"] != null; // true, false
-        }
 
         protected override void Dispose(bool disposing)
         {

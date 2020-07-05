@@ -23,6 +23,10 @@ namespace Proyecto_PAA.ViewModels
         [Display(Name = "Precio")]
         public int? ProductPrice { get; set; }
 
+        public HttpPostedFileBase Image { get; set; }
+
+        public string UrlImage { get; set; }
+
         public List<Product> Products { get; set; }
 
         public List<Category> Categories { get; set; }

@@ -146,6 +146,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\StartUp.Auth.cs" />
     <Compile Include="Controllers\AuthController.cs" />
+    <Compile Include="Controllers\BudgetsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Global.asax.cs">
@@ -178,18 +179,28 @@
     <Compile Include="Migrations\202007052019204_addIgaeUrlToProducsTable.Designer.cs">
       <DependentUpon>202007052019204_addIgaeUrlToProducsTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202007102347569_FixBudgetModels.cs" />
+    <Compile Include="Migrations\202007102347569_FixBudgetModels.Designer.cs">
+      <DependentUpon>202007102347569_FixBudgetModels.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007110002361_AddAuthorId.cs" />
+    <Compile Include="Migrations\202007110002361_AddAuthorId.Designer.cs">
+      <DependentUpon>202007110002361_AddAuthorId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\CategorySeeder.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\UserSeeder.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\BaseEntity.cs" />
     <Compile Include="Models\Budget.cs" />
+    <Compile Include="Models\BudgetProduct.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserRole.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\BudgetViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\ProductsViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
@@ -207,6 +218,9 @@
     <Content Include="Views\Shared\_Message.cshtml" />
     <Content Include="Views\Products\Index.cshtml" />
     <Content Include="Views\Products\Update.cshtml" />
+    <Content Include="Views\Budgets\Index.cshtml" />
+    <Content Include="Views\Budgets\Create.cshtml" />
+    <Content Include="Views\Budgets\Edit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -237,6 +251,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007052019204_addIgaeUrlToProducsTable.resx">
       <DependentUpon>202007052019204_addIgaeUrlToProducsTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007102347569_FixBudgetModels.resx">
+      <DependentUpon>202007102347569_FixBudgetModels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007110002361_AddAuthorId.resx">
+      <DependentUpon>202007110002361_AddAuthorId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

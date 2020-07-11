@@ -1,0 +1,61 @@
+﻿@model Proyecto_PAA.ViewModels.BudgetViewModel
+
+@{
+    ViewBag.Title = $"Presupuesto {Model.Budget.BudgetId}";
+}
+
+<div class="card mt-5">
+    <div class="card-header">@ViewBag.Title</div>
+    <div class="card-body">
+        <form action="/Budgets/AddProduct" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="BudgetId" value="@Model.Budget.BudgetId"/>
+            
+            <div class="form-group">
+                <label>Producto</label>
+                <select name="ProductId" class="form-control">
+                    <option> Seleccione aquí</option>
+                    @foreach (var item in Model.Products)
+                    {
+                        <option value="@item.ProductId">@item.ProductName</option>
+                    }
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Cantidad</label>
+                <input type="number" class="form-control" name="Quantity"/>
+            </div>
+            
+            <button type="submit" class="btn btn-success">
+                <i class="fa fa-save"></i> Agregar
+            </button>
+        </form>
+        
+        @if (Model.Budget.BudgetProducts.Count > 0)
+        {
+            <div class="table-responsive mt-5">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Total</th>
+                    </tr>
+                    @foreach (var item in Model.Budget.BudgetProducts)
+                    {
+                        <tr>
+                            <td>@item.Product.ProductName</td>
+                            <td>@item.Quantity</td>
+                            <td>$ @item.Total</td> 
+                        </tr>               
+                    }
+                    <tr>
+                        <td colspan="2">Total del presupuesto</td>
+                        <td>$ @Model.Budget.Total</td>
+                    </tr>
+                </table>
+            </div>
+        }
+    </div>
+
+</div>

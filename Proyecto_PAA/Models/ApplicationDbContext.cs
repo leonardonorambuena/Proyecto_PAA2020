@@ -30,6 +30,8 @@
 
         public virtual DbSet<Budget> Budgets { get; set; }
 
+        public virtual DbSet<BudgetProduct> BudgetProducts { get; set; }
+
     }
 
     //public class MyEntity

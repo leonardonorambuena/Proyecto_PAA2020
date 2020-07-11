@@ -98,8 +98,8 @@ namespace Proyecto_PAA.Controllers
         private string UploadFile(HttpPostedFileBase file, string nameDirectory)
         {
             string relativePath = @"/content/uploads/products/" + nameDirectory;
-            string directory = Server.MapPath(relativePath);
-            string name = $"{Guid.NewGuid()}.{file.FileName.Split('.').Last()}";
+            string directory = Server.MapPath(relativePath); 
+            string name = $"{Guid.NewGuid()}.{file.FileName.Split('.').Last()}"; //  zelda.2.jpg ["zelda"],["jpg"]
             string path = Path.Combine(directory, name);
 
             if (!Directory.Exists(path))

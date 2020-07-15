@@ -21,6 +21,7 @@ namespace Proyecto_PAA.Controllers
         {
             var budgets = await db.Budgets
                 .Include(x => x.Author)
+                .Include(x => x.BudgetProducts)
                 .OrderByDescending(x => x.BudgetId)
                 .ToListAsync(); // SELECT * FROM[Proyecto_PAA].[dbo].[Budgets] as b inner join users as u on b.AuthorId = u.UserId order by b.BudgetId desc
             return View(budgets);

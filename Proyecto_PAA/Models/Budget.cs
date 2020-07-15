@@ -15,6 +15,8 @@ namespace Proyecto_PAA.Models
         public int AuthorId { get; set; }
 
         public int Total => BudgetProducts?.Sum(x => x.Total) ?? 0;
+
+
         [Required]
         public BudgetState BudgetState { get; set; }
 
